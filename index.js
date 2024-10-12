@@ -41,22 +41,6 @@ client.on('messageCreate', async message => {
     }
   }
 
-  if (command === 'create') {
-    if (!args.length || !args[0].match(/<:[a-zA-Z0-9]+:[0-9]+>/)) {
-      return message.channel.send("Merci de spécifier un emoji valide.");
-    }
-
-    const emojiName = args[0].split(':')[1];
-    const emojiId = args[0].split(':')[2].slice(0, -1);
-
-    message.guild.emojis.create({ attachment: `https://cdn.discordapp.com/emojis/${emojiId}.png`, name: emojiName })
-      .then(emoji => message.channel.send(`Emoji ${emoji} créé avec succès!`))
-      .catch(error => {
-        console.error('Erreur lors de la création de l\'emoji:', error);
-        message.channel.send("Une erreur s'est produite lors de la création de l'emoji.");
-      });
-  }
-
   if (command === 'gcreate') {
     if (args.length < 4) {
       return message.channel.send(`Usage: ${prefix}gcreate <titre> <description> <temps en minutes> <nombre gagnant>`);
@@ -105,29 +89,6 @@ client.on('messageCreate', async message => {
       message.channel.send(winners.map(winner => `<@${winner}>`).join(', ') + ' a/ont gagné! Créez un ticket pour réclamer votre prix.');
 
     }, duration);
-  }
-
-  if (command === 'kissorkill') {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      return message.channel.send('Seuls les administrateurs peuvent utiliser cette commande.');
-    }
-
-    try {
-      const response = await axios.get('https://api.waifu.pics/sfw/waifu');
-      const imageUrl = response.data.url;
-
-      const kissOrKillEmbed = new EmbedBuilder()
-        .setTitle('**kiss or kill?**')
-        .setImage(imageUrl)
-        .setColor('#FF69B4');
-
-      const kissOrKillMessage = await message.channel.send({ embeds: [kissOrKillEmbed] });
-      await kissOrKillMessage.react('💋'); 
-      await kissOrKillMessage.react('🔪'); 
-    } catch (error) {
-      console.error('Erreur lors de la récupération de l\'image d\'anime:', error);
-      message.channel.send('Une erreur s\'est produite en récupérant l\'image d\'anime.');
-    }
   }
 
 
@@ -179,8 +140,6 @@ client.on('messageCreate', async message => {
         .addFields(
           { name: `${prefix}cat`, value: 'Affiche une image de chat aléatoire.' },
           { name: `${prefix}dog`, value: 'Affiche une image de chien aléatoire.' },
-          { name: `${prefix}kissorkill`, value: 'envoie un embed kiss or kill (admin only)' },
-          { name: `${prefix}blague`, value: 'envoie une blague aléatoire' },
           { name: `${prefix}random`, value: 'envoie un truc random de l\'internet' }
         )
         .setFooter({ text: 'Page 3/3 - made by tiyoky', iconURL: client.user.displayAvatarURL() })
@@ -214,23 +173,6 @@ client.on('messageCreate', async message => {
     });
   }
 
-  
-  if (command === 'spam') {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      return message.channel.send('Seuls les administrateurs peuvent utiliser cette commande.');
-    }
-
-    const [msg, times] = args;
-    const numberOfTimes = parseInt(times, 10);
-
-    if (!msg || isNaN(numberOfTimes) || numberOfTimes <= 0) {
-      return message.channel.send(`Usage: ${prefix}spam <message> <nombredefois>`);
-    }
-
-    for (let i = 0; i < numberOfTimes; i++) {
-      message.channel.send(msg);
-    }
-  }
 
   
   if (command === 'say') {
@@ -243,7 +185,7 @@ client.on('messageCreate', async message => {
   }
 
   if (command === 'who') {
-    return message.channel.send('Entièrement fait de A à Z par _tiyoky');
+    return message.channel.send('Entièrement fait de A à Z par TiYoKy');
   }
 
   if (command === 'mute') {
