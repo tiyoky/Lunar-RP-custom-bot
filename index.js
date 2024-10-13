@@ -46,28 +46,24 @@ client.on('messageCreate', async message => {
   if (message.author.bot) return;
 
 
-  const linkPattern = /(https?:\/\/[^\s]+)/g; 
-  const hasLink = linkPattern.test(message.content);
+const linkPattern = /(https?:\/\/[^\s]+)/g; 
+const hasLink = linkPattern.test(message.content);
 
+if (hasLink) {
+  await message.delete();
 
-  if (hasLink) {
-    
-    await message.delete();
-
-
-    try {
-      await message.author.send(`Tu ne peux pas envoyer de lien ou de fichier dans le salon ${message.channel}.`);
-    } catch (err) {
-      console.error(`Impossible d'envoyer un DM à ${message.author.tag}.`);
-    }
-
-
-    try {
-      await message.member.timeout(11 * 1000, 'Envoi de lien ou fichier interdit');
-    } catch (err) {
-      console.error(`Impossible d'appliquer un timeout à ${message.author.tag}.`);
-    }
+  try {
+    await message.author.send(`Tu ne peux pas envoyer de lien dans le salon ${message.channel}.`);
+  } catch (err) {
+    console.error(`Impossible d'envoyer un DM à ${message.author.tag}.`);
   }
+
+  try {
+    await message.member.timeout(11 * 1000, 'Envoi de lien interdit');
+  } catch (err) {
+    console.error(`Impossible d'appliquer un timeout à ${message.author.tag}.`);
+  }
+}
 
   if (!message.content.startsWith(prefix)) return;
 
