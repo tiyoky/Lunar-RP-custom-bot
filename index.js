@@ -48,10 +48,9 @@ client.on('messageCreate', async message => {
 
   const linkPattern = /(https?:\/\/[^\s]+)/g; 
   const hasLink = linkPattern.test(message.content);
-  const hasAttachment = message.attachments.size > 0;
 
 
-  if (hasLink || hasAttachment) {
+  if (hasLink) {
     
     await message.delete();
 
@@ -64,7 +63,7 @@ client.on('messageCreate', async message => {
 
 
     try {
-      await message.member.timeout(10 * 1000, 'Envoi de lien ou fichier interdit');
+      await message.member.timeout(11 * 1000, 'Envoi de lien ou fichier interdit');
     } catch (err) {
       console.error(`Impossible d'appliquer un timeout à ${message.author.tag}.`);
     }
