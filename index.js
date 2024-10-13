@@ -22,7 +22,35 @@ client.on('ready', () => {
 });
 
 client.on('messageCreate', async message => {
-  if (message.author.bot || !message.content.startsWith(prefix)) return;
+
+  if (message.author.bot) return;
+
+
+  const linkPattern = /(https?:\/\/[^\s]+)/g; 
+  const hasLink = linkPattern.test(message.content);
+  const hasAttachment = message.attachments.size > 0;
+
+
+  if (hasLink || hasAttachment) {
+    
+    await message.delete();
+
+
+    try {
+      await message.author.send(`Tu ne peux pas envoyer de lien ou de fichier dans le salon ${message.channel}.`);
+    } catch (err) {
+      console.error(`Impossible d'envoyer un DM à ${message.author.tag}.`);
+    }
+
+
+    try {
+      await message.member.timeout(10 * 1000, 'Envoi de lien ou fichier interdit');
+    } catch (err) {
+      console.error(`Impossible d'appliquer un timeout à ${message.author.tag}.`);
+    }
+  }
+
+  if (!message.content.startsWith(prefix)) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
