@@ -41,29 +41,29 @@ client.on('ready', () => {
   client.user.setActivity('made by tiyoky ❤️', { type: 'WATCHING' });
 });
 
-client.on('messageCreate', async message => {
+const exemptedUsers = ['1018206885704372274', '1294670874510758062', '1175520604946968636', '993653807659618416'];
 
+client.on('messageCreate', async message => {
   if (message.author.bot) return;
 
+  const linkPattern = /(https?:\/\/[^\s]+)/g; 
+  const hasLink = linkPattern.test(message.content);
 
-const linkPattern = /(https?:\/\/[^\s]+)/g; 
-const hasLink = linkPattern.test(message.content);
+  if (hasLink && !exemptedUsers.includes(message.author.id)) {
+    await message.delete();
 
-if (hasLink) {
-  await message.delete();
+    try {
+      await message.author.send(`Tu ne peux pas envoyer de lien dans le salon ${message.channel}.`);
+    } catch (err) {
+      console.error(`Impossible d'envoyer un DM à ${message.author.tag}.`);
+    }
 
-  try {
-    await message.author.send(`Tu ne peux pas envoyer de lien dans le salon ${message.channel}.`);
-  } catch (err) {
-    console.error(`Impossible d'envoyer un DM à ${message.author.tag}.`);
+    try {
+      await message.member.timeout(11 * 1000, 'Envoi de lien interdit');
+    } catch (err) {
+      console.error(`Impossible d'appliquer un timeout à ${message.author.tag}.`);
+    }
   }
-
-  try {
-    await message.member.timeout(11 * 1000, 'Envoi de lien interdit');
-  } catch (err) {
-    console.error(`Impossible d'appliquer un timeout à ${message.author.tag}.`);
-  }
-}
 
   if (!message.content.startsWith(prefix)) return;
 
